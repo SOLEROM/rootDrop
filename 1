@@ -1,5 +1,0 @@
-mmc rescan
-fatload mmc 0:0 0x60008000 zImage
-fatload mmc 0:0 0x62000000 vexpress-v2p-ca9.dtb
-setenv bootargs "console=ttyAMA0 root=/dev/vda rw"
-bootz 0x60008000 - 0x62000000

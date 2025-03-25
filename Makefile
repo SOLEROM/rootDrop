@@ -109,6 +109,7 @@ RUN sudo apt-get update && sudo apt-get install -y \
     file \
     dosfstools \
     mtools \
+    zlib1g-dev \
     libncurses-dev \
     sudo \
     gawk \
