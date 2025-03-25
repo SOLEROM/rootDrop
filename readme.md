@@ -29,3 +29,11 @@ mmc dev
 
 
 => fatls mmc 0:0
+
+
+setenv loadaddr 0x60100000              
+=> fatload mmc 0:0 $loadaddr testFile
+md.b $loadaddr
+md.l $loadaddr
+!!!!!!!!!!!!!!!!!  mm.b 0x60100020 ///  to change data
+!!!!!!!!!!!!!!!!!  fatwrite mmc 0:0 $loadaddr testFile $filesize  /// write back
