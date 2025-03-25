@@ -20,3 +20,12 @@ tools to brute
 
 ## playground
 make run SHARE=./container  
+
+mmc info
+mmc list
+mmc dev
+=> mmc part  
+=> ext4ls mmc 0:1 /
+
+
+=> fatls mmc 0:0

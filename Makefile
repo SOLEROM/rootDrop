@@ -111,6 +111,7 @@ RUN sudo apt-get update && sudo apt-get install -y \
     mtools \
     zlib1g-dev \
     libncurses-dev \
+    fdisk parted udev \
     sudo \
     gawk \
     && sudo apt-get clean \
@@ -161,7 +162,7 @@ run:
 		$(MAKE) connect; \
 	else \
 		echo "Running Docker container with GUI support: $(CONTAINER_NAME)"; \
-		docker run --name $(CONTAINER_NAME) --rm -d \
+		docker run --privileged --name $(CONTAINER_NAME) --rm -d \
 			--user $(shell id -u):$(shell id -g) \
 			-v /var/run/docker.sock:/var/run/docker.sock \
 			-v /tmp/.X11-unix:/tmp/.X11-unix \
