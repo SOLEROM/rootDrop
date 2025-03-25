@@ -30,15 +30,14 @@ $(UBOOT_SCRIPT): uboot_script.txt
 
 sdcard: $(UBOOT_SCRIPT)
 	rm -f $(SD_IMAGE)
-	mkdir -p sdcard
+	rm -rf ./mnt
 	cp $(OUTPUT_DIR)/zImage sdcard/
 	cp $(OUTPUT_DIR)/vexpress-v2p-ca9.dtb sdcard/
 	cp $(UBOOT_SCRIPT) sdcard/
 	dd if=/dev/zero of=$(SD_IMAGE) bs=1M count=64
 	mkfs.vfat $(SD_IMAGE)
-	mkdir -p /mnt/tmp_sd && sudo mount -o loop $(SD_IMAGE) /mnt/tmp_sd
-	sudo cp sdcard/* /mnt/tmp_sd/
-	sudo umount /mnt/tmp_sd
+	mkdir ./mnt && sudo mount -o loop $(SD_IMAGE) ./mnt
+	sudo cp sdcard/* ./mnt
 
 
 run: all
