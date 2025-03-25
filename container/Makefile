@@ -44,7 +44,7 @@ boot_only_uboot:
 	qemu-system-arm \
 	-M vexpress-a9 -m 256M \
    	-nographic \
-	-kernel $(OUTPUT_DIR)/u-boot.bin \
+	-kernel $(OUTPUT_DIR)/u-boot \
    	-serial mon:stdio
 boot1: boot_only_uboot
 
@@ -64,7 +64,7 @@ run:
 		-M vexpress-a9 \
 		-m 256M \
 		-nographic \
-		-kernel $(OUTPUT_DIR)/u-boot.bin \
+		-kernel $(OUTPUT_DIR)/u-boot \
 		-sd $(SD_IMAGE) \
 		-drive file=$(OUTPUT_DIR)/rootfs.ext2,if=none,format=raw,id=hd0 -device virtio-blk-device,drive=hd0 \
 		-audiodev none,id=noaudio
