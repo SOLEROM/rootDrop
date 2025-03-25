@@ -108,6 +108,7 @@ RUN sudo apt-get update && sudo apt-get install -y \
     g++ \
     file \
     dosfstools \
+    mtools \
     libncurses-dev \
     sudo \
     gawk \

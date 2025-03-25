@@ -30,15 +30,14 @@ $(UBOOT_SCRIPT): uboot_script.txt
 
 sdcard: $(UBOOT_SCRIPT)
 	rm -f $(SD_IMAGE)
-	rm -rf ./mnt
+	mkdir -p sdcard
 	cp $(OUTPUT_DIR)/zImage sdcard/
 	cp $(OUTPUT_DIR)/vexpress-v2p-ca9.dtb sdcard/
 	cp $(UBOOT_SCRIPT) sdcard/
 	dd if=/dev/zero of=$(SD_IMAGE) bs=1M count=64
 	mkfs.vfat $(SD_IMAGE)
-	mkdir ./mnt && sudo mount -o loop $(SD_IMAGE) ./mnt
-	sudo cp sdcard/* ./mnt
-
+	# Copy using mtools (no mount!)
+	mcopy -i $(SD_IMAGE) -s sdcard/* ::
 
 run: all
 	qemu-system-arm \
