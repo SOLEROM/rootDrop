@@ -1,4 +1,4 @@
-# QumoRoot
+# rootDrop
 
 get root on embd
 
@@ -19,4 +19,4 @@ get root on embd
 tools to brute
 
 ## playground
-make run SHARE=container  
+make run SHARE=./container  
