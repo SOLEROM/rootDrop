@@ -5,7 +5,7 @@ OUTPUT_DIR = $(BUILDROOT_DIR)/output/images
 SD_IMAGE = sdcard.img
 UBOOT_SCRIPT = boot.scr
 
-.PHONY: all buildroot build run
+.PHONY: all buildroot build run sdcard
 all: run
 
 clone:

@@ -107,6 +107,7 @@ RUN sudo apt-get update && sudo apt-get install -y \
     cpio \
     g++ \
     file \
+    dosfstools \
     libncurses-dev \
     sudo \
     gawk \
