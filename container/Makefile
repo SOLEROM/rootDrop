@@ -26,7 +26,7 @@ build: buildroot
 
 
 $(UBOOT_SCRIPT): uboot_script.txt
-        mkimage -A arm -T script -C none -n "Boot Script" -d uboot_script.txt $(UBOOT_SCRIPT)
+	mkimage -A arm -T script -C none -n "Boot Script" -d uboot_script.txt $(UBOOT_SCRIPT)
 
 sdcard: $(UBOOT_SCRIPT)
 	mkdir -p sdcard
