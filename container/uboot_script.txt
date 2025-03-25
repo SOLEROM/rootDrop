@@ -1,3 +1,4 @@
+echo ">>> Starting boot script..."
 mmc rescan
 fatload mmc 0:0 0x60008000 zImage
 fatload mmc 0:0 0x62000000 vexpress-v2p-ca9.dtb

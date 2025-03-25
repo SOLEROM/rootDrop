@@ -66,6 +66,7 @@ run:
 		-nographic \
 		-kernel $(OUTPUT_DIR)/u-boot.bin \
 		-sd $(SD_IMAGE) \
-		-drive file=$(OUTPUT_DIR)/rootfs.ext2,if=none,format=raw,id=hd0 -device virtio-blk-device,drive=hd0
+		-drive file=$(OUTPUT_DIR)/rootfs.ext2,if=none,format=raw,id=hd0 -device virtio-blk-device,drive=hd0 \
+		-audiodev none,id=noaudio
 
 
