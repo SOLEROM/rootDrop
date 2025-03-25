@@ -5,7 +5,7 @@ OUTPUT_DIR = $(BUILDROOT_DIR)/output/images
 SD_IMAGE = sdcard.img
 UBOOT_SCRIPT = boot.scr
 
-.PHONY: all buildroot build run sdcard
+.PHONY: all build boot1 boot2 run sdcard
 all: run
 
 clone:
@@ -38,6 +38,26 @@ sdcard: $(UBOOT_SCRIPT)
 	mkfs.vfat $(SD_IMAGE)
 	# Copy using mtools (no mount!)
 	mcopy -i $(SD_IMAGE) -s sdcard/* ::
+
+
+boot_only_uboot:
+	qemu-system-arm \
+	-M vexpress-a9 -m 256M \
+   	-nographic \
+	-kernel $(OUTPUT_DIR)/u-boot.bin \
+   	-serial mon:stdio
+boot1: boot_only_uboot
+
+boot_no_uboot:
+	qemu-system-arm \
+	-M vexpress-a9 -m 256M \
+	-nographic \
+     	-kernel $(OUTPUT_DIR)/zImage \
+	-dtb $(OUTPUT_DIR)/vexpress-v2p-ca9.dtb \
+	-append "console=ttyAMA0 root=/dev/mmcblk0 rw" \
+	-sd $(OUTPUT_DIR)/rootfs.ext2 
+boot2: boot_no_uboot
+
 
 run:
 	qemu-system-arm \
