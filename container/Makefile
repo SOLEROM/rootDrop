@@ -29,6 +29,7 @@ $(UBOOT_SCRIPT): uboot_script.txt
 	mkimage -A arm -T script -C none -n "Boot Script" -d uboot_script.txt $(UBOOT_SCRIPT)
 
 sdcard: $(UBOOT_SCRIPT)
+	rm -f $(SD_IMAGE)
 	mkdir -p sdcard
 	cp $(OUTPUT_DIR)/zImage sdcard/
 	cp $(OUTPUT_DIR)/vexpress-v2p-ca9.dtb sdcard/
