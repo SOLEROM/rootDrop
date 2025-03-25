@@ -34,6 +34,7 @@ sdcard_fat: $(UBOOT_SCRIPT)
 	cp $(OUTPUT_DIR)/zImage sdcard/
 	cp $(OUTPUT_DIR)/vexpress-v2p-ca9.dtb sdcard/
 	cp $(UBOOT_SCRIPT) sdcard/
+	cp testFile sdcard/
 	dd if=/dev/zero of=$(SD_IMAGE) bs=1M count=64
 	mkfs.vfat $(SD_IMAGE)
 	# Copy using mtools (no mount!)
@@ -56,6 +57,7 @@ sdcard_ext: $(UBOOT_SCRIPT)
 	sudo cp $(OUTPUT_DIR)/zImage                mnt_sdcard
 	sudo cp $(OUTPUT_DIR)/vexpress-v2p-ca9.dtb  mnt_sdcard
 	sudo cp $(UBOOT_SCRIPT)                     mnt_sdcard
+	sudo cp testFile                            mnt_sdcard
 	@echo "Unmounting..."
 	sudo umount mnt_sdcard
 	rmdir mnt_sdcard
