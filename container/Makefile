@@ -39,13 +39,13 @@ sdcard: $(UBOOT_SCRIPT)
 	# Copy using mtools (no mount!)
 	mcopy -i $(SD_IMAGE) -s sdcard/* ::
 
-run: all
+run:
 	qemu-system-arm \
 		-M vexpress-a9 \
 		-m 256M \
 		-nographic \
 		-kernel $(OUTPUT_DIR)/u-boot.bin \
 		-sd $(SD_IMAGE) \
-		-drive file=$(OUTPUT_DIR)/rootfs.ext2,if=sd,format=raw,index=1
+		-drive file=$(OUTPUT_DIR)/rootfs.ext2,if=none,format=raw,id=hd0 -device virtio-blk-device,drive=hd0
 
 
