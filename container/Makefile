@@ -1,7 +1,7 @@
 BUILDROOT_TAG = 2024.02
 BUILDROOT_REPO = https://github.com/buildroot/buildroot.git
 BUILDROOT_DIR   = buildroot
-IMAGES_DIR = $(BUILDROOT_DIR)/output/images
+OUTPUT_DIR = $(BUILDROOT_DIR)/output/images
 SD_IMAGE = sdcard.img
 UBOOT_SCRIPT = boot.scr
 
@@ -21,22 +21,24 @@ buildroot: clone
 	cd $(BUILDROOT_DIR) && make qemu_arm_vexpress_defconfig
 	cp buildroot.config $(BUILDROOT_DIR)/.config
 	cd $(BUILDROOT_DIR) && make
-	tree $(IMAGES_DIR)
+	tree $(OUTPUT_DIR)
 build: buildroot
 
 
-sdcard: buildroot
+$(UBOOT_SCRIPT): uboot_script.txt
+        mkimage -A arm -T script -C none -n "Boot Script" -d uboot_script.txt $(UBOOT_SCRIPT)
+
+sdcard: $(UBOOT_SCRIPT)
 	mkdir -p sdcard
 	cp $(OUTPUT_DIR)/zImage sdcard/
 	cp $(OUTPUT_DIR)/vexpress-v2p-ca9.dtb sdcard/
+	cp $(UBOOT_SCRIPT) sdcard/
 	dd if=/dev/zero of=$(SD_IMAGE) bs=1M count=64
 	mkfs.vfat $(SD_IMAGE)
 	mkdir -p /mnt/tmp_sd && sudo mount -o loop $(SD_IMAGE) /mnt/tmp_sd
 	sudo cp sdcard/* /mnt/tmp_sd/
 	sudo umount /mnt/tmp_sd
 
-$(UBOOT_SCRIPT): uboot_script.txt
-	mkimage -A arm -T script -C none -n "Boot Script" -d uboot_script.txt $(UBOOT_SCRIPT)
 
 run: all
 	qemu-system-arm \
