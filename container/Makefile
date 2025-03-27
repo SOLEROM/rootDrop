@@ -72,8 +72,9 @@ sdcard_fat: $(UBOOT_SCRIPT) ## Create FAT-formatted SD card image
 	parted --script $(SD_IMAGE) mklabel msdos
 	parted --script $(SD_IMAGE) mkpart primary fat32 1MiB 100%
 	# Format the partition (at 1MiB offset)
-	mkfs.vfat -n BOOT -F 32 -v $(SD_IMAGE) -o 2048	
-	mcopy -i $(SD_IMAGE) -s sdcard/* ::
+	mkfs.vfat -n BOOT -F 32 -v $(SD_IMAGE) --offset=2048	
+	# Copy files into partition using mtools (1MiB offset)
+	mcopy -i $(SD_IMAGE)@@1048576 -s sdcard/* ::
 
 # SD card ext4
 .PHONY: sdcard_ext
