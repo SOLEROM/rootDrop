@@ -1,3 +1,11 @@
+# Variables
+BUILDROOT_TAG = 2024.02
+BUILDROOT_REPO = https://github.com/buildroot/buildroot.git
+BUILDROOT_DIR = buildroot
+OUTPUT_DIR = $(BUILDROOT_DIR)/output/images
+SD_IMAGE = sdcard.img
+UBOOT_SCRIPT = boot.scr
+
 .DEFAULT_GOAL := help
 
 .PHONY: help
