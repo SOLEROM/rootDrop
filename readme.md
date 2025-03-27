@@ -18,6 +18,8 @@ tasks:
 
 ## playground
 * [uboot write mmc](./play1_uboot_write.md)
+* [uboot printenv](./play1_uboot_printenv.md)
+* [uboot boot.scr](
 
 * kernel params
 	run level 
