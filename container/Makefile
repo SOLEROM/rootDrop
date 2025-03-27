@@ -16,14 +16,11 @@ help:
 	@echo "  clone               Clone buildroot if not already cloned"
 	@echo "  build_config        Run Buildroot menuconfig"
 	@echo "  uboot_config        Run U-Boot menuconfig"
-	@echo "  buildroot           Build Buildroot using qemu_arm_vexpress_defconfig"
-	@echo "  build               Alias for buildroot"
+	@echo "  build | buildroot   Build Buildroot using qemu_arm_vexpress_defconfig"
 	@echo "  sdcard_fat          Create FAT-formatted SD card image with boot files"
 	@echo "  sdcard_ext          Create EXT4-formatted SD card image with boot files"
-	@echo "  boot_only_uboot     Boot U-Boot only in QEMU"
-	@echo "  boot1               Alias for boot_only_uboot"
-	@echo "  boot_no_uboot       Boot directly into Linux kernel without U-Boot"
-	@echo "  boot2               Alias for boot_no_uboot"
+	@echo "  boot1| boot_only_uboot     Boot U-Boot only in QEMU"
+	@echo "  boot2| boot_no_uboot       Boot directly into Linux kernel without U-Boot"
 	@echo "  run                 Boot full system via QEMU using U-Boot and SD image"
 	@echo ""
 
@@ -125,7 +122,7 @@ boot_no_uboot: ## Boot directly without U-Boot
 boot2: boot_no_uboot ## Alias for boot_no_uboot
 
 .PHONY: run
-run: ## Full boot via QEMU using U-Boot and SD image
+run: sdcard_fat  ## Full boot via QEMU using U-Boot and SD image
 	qemu-system-arm \
 		-M vexpress-a9 \
 		-m 256M \
