@@ -1,14 +1,29 @@
-BUILDROOT_TAG = 2024.02
-BUILDROOT_REPO = https://github.com/buildroot/buildroot.git
-BUILDROOT_DIR   = buildroot
-OUTPUT_DIR = $(BUILDROOT_DIR)/output/images
-SD_IMAGE = sdcard.img
-UBOOT_SCRIPT = boot.scr
+.DEFAULT_GOAL := help
 
-.PHONY: all build boot1 boot2 run sdcard
-all: run
+.PHONY: help
+help:
+	@echo ""
+	@echo "Makefile targets:"
+	@echo "  help                Show this help message"
+	@echo "  clone               Clone buildroot if not already cloned"
+	@echo "  build_config        Run Buildroot menuconfig"
+	@echo "  uboot_config        Run U-Boot menuconfig"
+	@echo "  buildroot           Build Buildroot using qemu_arm_vexpress_defconfig"
+	@echo "  build               Alias for buildroot"
+	@echo "  sdcard_fat          Create FAT-formatted SD card image with boot files"
+	@echo "  sdcard_ext          Create EXT4-formatted SD card image with boot files"
+	@echo "  boot_only_uboot     Boot U-Boot only in QEMU"
+	@echo "  boot1               Alias for boot_only_uboot"
+	@echo "  boot_no_uboot       Boot directly into Linux kernel without U-Boot"
+	@echo "  boot2               Alias for boot_no_uboot"
+	@echo "  run                 Boot full system via QEMU using U-Boot and SD image"
+	@echo ""
 
-clone:
+
+
+# Buildroot related
+.PHONY: clone
+clone: ## Clone buildroot if not already cloned
 	@if [ ! -d "$(BUILDROOT_DIR)/.git" ]; then \
 		echo "Cloning Buildroot..."; \
 		git clone --depth 1 --branch $(BUILDROOT_TAG) $(BUILDROOT_REPO) $(BUILDROOT_DIR); \
@@ -16,19 +31,31 @@ clone:
 		echo "Buildroot already cloned, skipping."; \
 	fi
 
+.PHONY: build_config
+build_config: ## Run buildroot menuconfig
+	make -C $(BUILDROOT_DIR) menuconfig
 
-buildroot: clone
+.PHONY: uboot_config
+uboot_config: ## Run U-Boot menuconfig
+	make -C $(BUILDROOT_DIR) uboot-menuconfig
+
+.PHONY: buildroot
+buildroot: clone ## Build buildroot using qemu_arm_vexpress_defconfig
 	cd $(BUILDROOT_DIR) && make qemu_arm_vexpress_defconfig
 	cp buildroot.config $(BUILDROOT_DIR)/.config
 	cd $(BUILDROOT_DIR) && make
 	tree $(OUTPUT_DIR)
-build: buildroot
 
+.PHONY: build
+build: buildroot ## Alias for buildroot
 
-$(UBOOT_SCRIPT): uboot_script.txt
+# U-Boot script
+$(UBOOT_SCRIPT): uboot_script.txt ## Build U-Boot boot.scr script
 	mkimage -A arm -T script -C none -n "Boot Script" -d uboot_script.txt $(UBOOT_SCRIPT)
 
-sdcard_fat: $(UBOOT_SCRIPT)
+# SD card FAT
+.PHONY: sdcard_fat
+sdcard_fat: $(UBOOT_SCRIPT) ## Create FAT-formatted SD card image
 	rm -f $(SD_IMAGE)
 	mkdir -p sdcard
 	cp $(OUTPUT_DIR)/zImage sdcard/
@@ -37,10 +64,11 @@ sdcard_fat: $(UBOOT_SCRIPT)
 	cp testFile sdcard/
 	dd if=/dev/zero of=$(SD_IMAGE) bs=1M count=64
 	mkfs.vfat $(SD_IMAGE)
-	# Copy using mtools (no mount!)
 	mcopy -i $(SD_IMAGE) -s sdcard/* ::
 
-sdcard_ext: $(UBOOT_SCRIPT)
+# SD card ext4
+.PHONY: sdcard_ext
+sdcard_ext: $(UBOOT_SCRIPT) ## Create ext4-formatted SD card image
 	@echo "Removing any existing image..."
 	rm -f $(SD_IMAGE)
 	@echo "Creating a 64MB sparse file..."
@@ -63,28 +91,33 @@ sdcard_ext: $(UBOOT_SCRIPT)
 	rmdir mnt_sdcard
 	@echo "Done. Created and populated sdcard_ext.img with an ext4 partition."
 
-
-
-boot_only_uboot:
+# Boot options
+.PHONY: boot_only_uboot
+boot_only_uboot: ## Boot only U-Boot in QEMU
 	qemu-system-arm \
-	-M vexpress-a9 -m 256M \
-	-nographic \
-	-kernel $(OUTPUT_DIR)/u-boot \
-	-serial mon:stdio
-boot1: boot_only_uboot
+		-M vexpress-a9 -m 256M \
+		-nographic \
+		-kernel $(OUTPUT_DIR)/u-boot \
+		-serial mon:stdio
 
-boot_no_uboot:
+.PHONY: boot1
+boot1: boot_only_uboot ## Alias for boot_only_uboot
+
+.PHONY: boot_no_uboot
+boot_no_uboot: ## Boot directly without U-Boot
 	qemu-system-arm \
-	-M vexpress-a9 -m 256M \
-	-nographic \
-	-kernel $(OUTPUT_DIR)/zImage \
-	-dtb $(OUTPUT_DIR)/vexpress-v2p-ca9.dtb \
-	-append "console=ttyAMA0 root=/dev/mmcblk0 rw" \
-	-sd $(OUTPUT_DIR)/rootfs.ext2 
-boot2: boot_no_uboot
+		-M vexpress-a9 -m 256M \
+		-nographic \
+		-kernel $(OUTPUT_DIR)/zImage \
+		-dtb $(OUTPUT_DIR)/vexpress-v2p-ca9.dtb \
+		-append "console=ttyAMA0 root=/dev/mmcblk0 rw" \
+		-sd $(OUTPUT_DIR)/rootfs.ext2
 
+.PHONY: boot2
+boot2: boot_no_uboot ## Alias for boot_no_uboot
 
-run:
+.PHONY: run
+run: ## Full boot via QEMU using U-Boot and SD image
 	qemu-system-arm \
 		-M vexpress-a9 \
 		-m 256M \
@@ -94,4 +127,6 @@ run:
 		-drive file=$(OUTPUT_DIR)/rootfs.ext2,if=none,format=raw,id=hd0 -device virtio-blk-device,drive=hd0 \
 		-audiodev none,id=noaudio
 
+.PHONY: all
+all: help
 

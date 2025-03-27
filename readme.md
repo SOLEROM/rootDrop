@@ -1,9 +1,23 @@
 # rootDrop
 
-get root on embd
+tasks:
+* get root on embd
 
-* test bench
-	qemu with uboot to stop on;
+##  test bench
+* build docker for playground ( make build / make run SHARE=./container )
+* Build Buildroot using qemu_arm_vexpress_defconfig, including:
+
+```
+        U-Boot			|	( use buildroot.config)
+        Kernel (zImage)		|  ===> make build
+        DTB			|
+        RootFS			|
+
+	run qemu with uboot to stop on;		=> make run
+```
+
+## playground
+* [uboot write mmc](./play1_uboot_write.md)
 
 * kernel params
 	run level 
@@ -18,22 +32,4 @@ get root on embd
 /dev/shadow struct
 tools to brute
 
-## playground
-make run SHARE=./container  
 
-mmc info
-mmc list
-mmc dev
-=> mmc part  
-=> ext4ls mmc 0:1 /
-
-
-=> fatls mmc 0:0
-
-
-setenv loadaddr 0x60100000              
-=> fatload mmc 0:0 $loadaddr testFile
-md.b $loadaddr
-md.l $loadaddr
-!!!!!!!!!!!!!!!!!  mm.b 0x60100020 ///  to change data
-!!!!!!!!!!!!!!!!!  fatwrite mmc 0:0 $loadaddr testFile $filesize  /// write back
