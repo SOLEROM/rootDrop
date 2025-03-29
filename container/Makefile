@@ -94,7 +94,7 @@ sdcard_ext: $(UBOOT_SCRIPT) ## Create ext4-formatted SD card image
 	@echo "Copying files to the image..."
 	sudo cp $(OUTPUT_DIR)/zImage                mnt_sdcard
 	sudo cp $(OUTPUT_DIR)/vexpress-v2p-ca9.dtb  mnt_sdcard
-	sudo cp $(UBOOT_SCRIPT)                     mnt_sdcard
+	sudo cp extlinux.conf                       mnt_sdcard
 	sudo cp testFile                            mnt_sdcard
 	@echo "Unmounting..."
 	sudo umount mnt_sdcard
@@ -127,7 +127,7 @@ boot_no_uboot: ## Boot directly without U-Boot
 boot2: boot_no_uboot ## Alias for boot_no_uboot
 
 .PHONY: run
-run: sdcard_fat  ## Full boot via QEMU using U-Boot and SD image
+run: 
 	qemu-system-arm \
 		-M vexpress-a9 \
 		-m 256M \

@@ -17,9 +17,9 @@ tasks:
 ```
 
 ## playground
-* [uboot write mmc](./play1_uboot_write.md)
-* [uboot printenv](./play1_uboot_printenv.md)
-* [uboot boot.scr](
+* [uboot write mmc](./uboot/play1_uboot_write.md)
+* [uboot printenv](./uboot/play1_uboot_printenv.md)
+* [uboot boot.scr](./uboot/play1_uboot_bootscr.md)
 
 * kernel params
 	run level 
