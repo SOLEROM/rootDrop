@@ -158,10 +158,7 @@ sdcard_ext2: ## Create ext4-formatted SD card image with two partitions
 	mkdir -p mnt_sdcard2
 	sudo mount -o loop,offset=68157440 $(SD_IMAGE) mnt_sdcard2
 	@echo "Copying contents of rootfs.ext2 to partition 2..."
-	mkdir -p mnt_rootfs
-	sudo tar xf $(OUTPUT_DIR)/rootfs.tar -C mnt_rootfs
-	sudo umount mnt_rootfs
-	rmdir mnt_rootfs
+	sudo tar xf $(OUTPUT_DIR)/rootfs.tar -C mnt_sdcard2
 	sudo umount mnt_sdcard2
 	rmdir mnt_sdcard2
 
