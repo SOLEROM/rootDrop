@@ -123,7 +123,7 @@ sdcard_ext:
 	@echo "Done. Created and populated $(SD_IMAGE) with an ext4 partition."
 
 .PHONY: sdcard_ext2
-sdcard_ext2: ## Create ext4-formatted SD card image with two partitions
+sdcard_ext2: ## Create p1:FAT/p2:ext4 formatted SD card image with two partitions
 	@echo "Removing any existing image..."
 	rm -f $(SD_IMAGE)
 
@@ -132,26 +132,24 @@ sdcard_ext2: ## Create ext4-formatted SD card image with two partitions
 
 	@echo "Creating an MBR partition table with two partitions..."
 	parted --script $(SD_IMAGE) mklabel msdos
-	parted --script $(SD_IMAGE) mkpart primary ext4 1MiB 65MiB
+	parted --script $(SD_IMAGE) mkpart primary fat32 1MiB 65MiB
 	parted --script $(SD_IMAGE) mkpart primary ext4 65MiB 100%
 
-	@echo "Formatting partition 1 with ext4 at offset 1MiB..."
-	mkfs.ext4 -F -v -E offset=1048576 $(SD_IMAGE)
+	# Format the partition (at 1MiB offset)
+	mkfs.vfat -n BOOT -F 32 -v $(SD_IMAGE) --offset=2048
 
 	@echo "Formatting partition 2 with ext4 at offset 65MiB..."
 	mkfs.ext4 -F -v -E offset=68157440 $(SD_IMAGE)
 
 	@echo "Mounting partition 1 from image at ./mnt_sdcard1..."
 	mkdir -p mnt_sdcard1
-	sudo mount -o loop,offset=1048576 $(SD_IMAGE) mnt_sdcard1
-	@echo "Copying boot files to partition 1..."
 	sudo cp $(OUTPUT_DIR)/zImage               mnt_sdcard1
 	sudo cp $(OUTPUT_DIR)/vexpress-v2p-ca9.dtb mnt_sdcard1
 	sudo mkdir -p mnt_sdcard1/extlinux
 	sudo cp extlinux.conf                      mnt_sdcard1/extlinux/
 	sudo cp testFile                           mnt_sdcard1
-	sudo umount mnt_sdcard1
-	rmdir mnt_sdcard1
+	# Copy files into partition using mtools (1MiB offset)
+	mcopy -i $(SD_IMAGE)@@1048576 -s mnt_sdcard1/* ::
 
 	@echo "Mounting partition 2 from image at ./mnt_sdcard2..."
 	mkdir -p mnt_sdcard2
