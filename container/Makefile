@@ -23,7 +23,7 @@ help:
 	@echo " >>> sdcard 					"
 	@echo "  sdcard_fat          		Create FAT-formatted SD card image with boot files"
 	@echo "  sdcard_ext          		Create EXT4 SD card 1 partition for boot"
-	@echo "  sdcard_ext2          		Create EXT4 SD 2 partitions"
+	@echo "  sdcard_ext2          		Create EXT4 SD 2 partitions (fat/ext4)"
 	@echo " >>> emulation runers	"
 	@echo "  boot1| boot_only_uboot     Boot U-Boot only in QEMU"
 	@echo "  boot2| boot_no_uboot       Boot directly into Linux kernel without U-Boot"
