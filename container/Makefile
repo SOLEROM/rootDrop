@@ -57,6 +57,10 @@ uboot_clean:
 uboot_rebuild:
 	make -C buildroot uboot-reconfigure
 
+.PHONY: kernel_config
+kernel_config:
+	make -C buildroot linux-menuconfig
+
 
 .PHONY: buildroot
 buildroot: clone ## Build buildroot using qemu_arm_vexpress_defconfig
@@ -93,7 +97,7 @@ sdcard_fat: $(UBOOT_SCRIPT) ## Create FAT-formatted SD card image
 
 # SD card ext4
 .PHONY: sdcard_ext
-sdcard_ext: $(UBOOT_SCRIPT) ## Create ext4-formatted SD card image
+sdcard_ext:
 	@echo "Removing any existing image..."
 	rm -f $(SD_IMAGE)
 	@echo "Creating a 64MB sparse file..."
@@ -117,6 +121,51 @@ sdcard_ext: $(UBOOT_SCRIPT) ## Create ext4-formatted SD card image
 	sudo umount mnt_sdcard
 	rmdir mnt_sdcard
 	@echo "Done. Created and populated $(SD_IMAGE) with an ext4 partition."
+
+.PHONY: sdcard_ext2
+sdcard_ext2: ## Create ext4-formatted SD card image with two partitions
+	@echo "Removing any existing image..."
+	rm -f $(SD_IMAGE)
+
+	@echo "Creating a 128MB sparse file..."
+	dd if=/dev/zero of=$(SD_IMAGE) bs=1M count=128
+
+	@echo "Creating an MBR partition table with two partitions..."
+	parted --script $(SD_IMAGE) mklabel msdos
+	parted --script $(SD_IMAGE) mkpart primary ext4 1MiB 65MiB
+	parted --script $(SD_IMAGE) mkpart primary ext4 65MiB 100%
+
+	@echo "Formatting partition 1 with ext4 at offset 1MiB..."
+	mkfs.ext4 -F -v -E offset=1048576 $(SD_IMAGE)
+
+	@echo "Formatting partition 2 with ext4 at offset 65MiB..."
+	mkfs.ext4 -F -v -E offset=68157440 $(SD_IMAGE)
+
+	@echo "Mounting partition 1 from image at ./mnt_sdcard1..."
+	mkdir -p mnt_sdcard1
+	sudo mount -o loop,offset=1048576 $(SD_IMAGE) mnt_sdcard1
+	@echo "Copying boot files to partition 1..."
+	sudo cp $(OUTPUT_DIR)/zImage               mnt_sdcard1
+	sudo cp $(OUTPUT_DIR)/vexpress-v2p-ca9.dtb mnt_sdcard1
+	sudo mkdir -p mnt_sdcard1/extlinux
+	sudo cp extlinux.conf                      mnt_sdcard1/extlinux/
+	sudo cp testFile                           mnt_sdcard1
+	tree mnt_sdcard1
+	sudo umount mnt_sdcard1
+	rmdir mnt_sdcard1
+
+	@echo "Mounting partition 2 from image at ./mnt_sdcard2..."
+	mkdir -p mnt_sdcard2
+	sudo mount -o loop,offset=68157440 $(SD_IMAGE) mnt_sdcard2
+	@echo "Copying contents of rootfs.ext2 to partition 2..."
+	mkdir -p mnt_rootfs
+	sudo tar xf $(OUTPUT_DIR)/rootfs.tar -C mnt_rootfs
+	sudo umount mnt_rootfs
+	rmdir mnt_rootfs
+	sudo umount mnt_sdcard2
+	rmdir mnt_sdcard2
+
+	@echo "Done. Created and populated $(SD_IMAGE) with two ext4 partitions."
 
 # Boot options
 .PHONY: boot_only_uboot

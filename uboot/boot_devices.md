@@ -29,3 +29,7 @@ blk list
   │     -> Device Drivers                                                                            │  
   │ (1)   -> VirtIO Drivers   
 ```
+
+```
+  │ │            [*] Composable virtual block devices (blkmap)                                     │ │  
+```
