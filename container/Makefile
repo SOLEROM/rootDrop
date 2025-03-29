@@ -94,7 +94,7 @@ sdcard_ext: $(UBOOT_SCRIPT) ## Create ext4-formatted SD card image
 	@echo "Copying files to the image..."
 	sudo cp $(OUTPUT_DIR)/zImage                mnt_sdcard
 	sudo cp $(OUTPUT_DIR)/vexpress-v2p-ca9.dtb  mnt_sdcard
-	mkdir -p mnt_sdcard/extlinux
+	sudo mkdir -p mnt_sdcard/extlinux
 	sudo cp extlinux.conf                       mnt_sdcard/extlinux/
 	sudo cp testFile                            mnt_sdcard
 	@echo "Unmounting..."
