@@ -117,7 +117,6 @@ sdcard_ext:
 	sudo mkdir -p mnt_sdcard/extlinux
 	sudo cp extlinux.conf                       mnt_sdcard/extlinux/
 	sudo cp testFile                            mnt_sdcard
-	tree mnt_sdcard
 	@echo "Unmounting..."
 	sudo umount mnt_sdcard
 	rmdir mnt_sdcard
