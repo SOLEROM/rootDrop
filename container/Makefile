@@ -94,12 +94,12 @@ sdcard_ext: $(UBOOT_SCRIPT) ## Create ext4-formatted SD card image
 	@echo "Copying files to the image..."
 	sudo cp $(OUTPUT_DIR)/zImage                mnt_sdcard
 	sudo cp $(OUTPUT_DIR)/vexpress-v2p-ca9.dtb  mnt_sdcard
-	sudo cp extlinux.conf                       mnt_sdcard
+	sudo cp extlinux.conf                       mnt_sdcard/extlinux
 	sudo cp testFile                            mnt_sdcard
 	@echo "Unmounting..."
 	sudo umount mnt_sdcard
 	rmdir mnt_sdcard
-	@echo "Done. Created and populated sdcard_ext.img with an ext4 partition."
+	@echo "Done. Created and populated $(SD_IMAGE) with an ext4 partition."
 
 # Boot options
 .PHONY: boot_only_uboot
