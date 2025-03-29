@@ -62,6 +62,7 @@ uboot_rebuild:
 buildroot: clone ## Build buildroot using qemu_arm_vexpress_defconfig
 	cd $(BUILDROOT_DIR) && make qemu_arm_vexpress_defconfig
 	cp buildroot.config $(BUILDROOT_DIR)/.config
+	cp uboot.config $(BUILDROOT_DIR)/output/build/uboot-2024.01/.config
 	cd $(BUILDROOT_DIR) && make
 	tree $(OUTPUT_DIR)
 
@@ -111,6 +112,7 @@ sdcard_ext: $(UBOOT_SCRIPT) ## Create ext4-formatted SD card image
 	sudo mkdir -p mnt_sdcard/extlinux
 	sudo cp extlinux.conf                       mnt_sdcard/extlinux/
 	sudo cp testFile                            mnt_sdcard
+	tree mnt_sdcard
 	@echo "Unmounting..."
 	sudo umount mnt_sdcard
 	rmdir mnt_sdcard
