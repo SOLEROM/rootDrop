@@ -15,10 +15,15 @@ help:
 	@echo "  help                		Show this help message"
 	@echo "  clone               		Clone buildroot if not already cloned"
 	@echo "  build_config        		Run Buildroot menuconfig"
-	@echo "  uboot_config        		Run U-Boot menuconfig"
 	@echo "  build | buildroot   		Build Buildroot using qemu_arm_vexpress_defconfig"
+	@echo " >>> uboot 					"
+	@echo "  	uboot_config        	"
+	@echo "  	uboot_clean 			"
+	@echo " 	uboot_rebuild 			"
+	@echo " >>> sdcard 					"
 	@echo "  sdcard_fat          		Create FAT-formatted SD card image with boot files"
 	@echo "  sdcard_ext          		Create EXT4-formatted SD card image with boot files"
+	@echo " >>> emulation runers	"
 	@echo "  boot1| boot_only_uboot     Boot U-Boot only in QEMU"
 	@echo "  boot2| boot_no_uboot       Boot directly into Linux kernel without U-Boot"
 	@echo "  run                 		Boot full system via QEMU using U-Boot and SD image"
@@ -43,6 +48,15 @@ build_config: ## Run buildroot menuconfig
 .PHONY: uboot_config
 uboot_config: ## Run U-Boot menuconfig
 	make -C $(BUILDROOT_DIR) uboot-menuconfig
+
+.PHONY: uboot_clean
+uboot_clean:
+	make -C buildroot uboot-dirclean
+
+.PHONY: uboot_rebuild
+uboot_rebuild:
+	make -C buildroot uboot-reconfigure
+
 
 .PHONY: buildroot
 buildroot: clone ## Build buildroot using qemu_arm_vexpress_defconfig

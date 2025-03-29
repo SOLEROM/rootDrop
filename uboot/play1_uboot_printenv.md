@@ -18,6 +18,7 @@ so uboot config will be:
 that include #include "vexpress_common.h"
 
 ./buildroot/output/build/uboot-2024.01/include/configs/vexpress_common.h
+
 #define CFG_EXTRA_ENV_SETTINGS \
                 "loadaddr=0x60100000\0" \
                 "kernel_addr_r=0x60100000\0" \

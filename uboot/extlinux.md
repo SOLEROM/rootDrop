@@ -61,6 +61,24 @@ sysboot [-p] <interface> <dev[:part]> <ext2|fat|any> [addr] [filename]
 
 ```
 
+manualy test run:
+```
+setenv scriptaddr 0x60100000
+sysboot mmc 0:1 any ${scriptaddr} /extlinux/extlinux.conf
+
+```
+
+add support to uboot:
+
+```
+./buildroot/output/build/uboot-2024.01/include/configs/vexpress_common.h
+
+#define CFG_EXTRA_ENV_SETTINGS \
+                "scriptaddr=0x60100000\0" \
+
+
+```
+
 ### auto load ?
 
 By default, many modern U-Boot configurations include logic (in their environment variables and bootscripts) that looks for a file named extlinux.conf on specific storage devices and partitions.
@@ -76,3 +94,36 @@ else
 fi
 ```
 
+## test:
+
+```
+using : extlinux.conf 
+======================
+default primary
+prompt 1
+timeout 0
+console ttyAMA0,38400n8
+
+
+label primary
+    menu label Boot Primary Kernel
+    kernel /Image
+    fdt /vexpress-v2p-ca9.dtb
+    append console=ttyAMA0,38400n8 root=/dev/mmcblk0p2 rw
+
+
+
+
+> make run 
+
+switch to partitions #0, OK
+mmc0 is current device
+Scanning mmc 0:1...
+Found /extlinux/extlinux.conf
+Retrieving file: /extlinux/extlinux.conf
+Ignoring unknown command: console
+1:	Boot Primary Kernel
+
+
+
+```
