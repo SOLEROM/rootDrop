@@ -75,6 +75,8 @@ buildroot: clone ## Build buildroot using qemu_arm_vexpress_defconfig
 build: buildroot ## Alias for buildroot
 
 # U-Boot script
+.PHONY: uboot_script
+uboot_script: $(UBOOT_SCRIPT)
 $(UBOOT_SCRIPT): uboot_script.txt ## Build U-Boot boot.scr script
 	mkimage -A arm -T script -C none -n "Boot Script" -d uboot_script.txt $(UBOOT_SCRIPT)
 
