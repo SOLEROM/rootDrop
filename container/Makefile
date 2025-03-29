@@ -98,7 +98,7 @@ sdcard_fat: $(UBOOT_SCRIPT) ## Create FAT-formatted SD card image
 
 # SD card ext4
 .PHONY: sdcard_ext
-sdcard_ext:
+sdcard_ext: 
 	@echo "Removing any existing image..."
 	rm -f $(SD_IMAGE)
 	@echo "Creating a 64MB sparse file..."
@@ -114,6 +114,7 @@ sdcard_ext:
 	@echo "Copying files to the image..."
 	sudo cp $(OUTPUT_DIR)/zImage                mnt_sdcard
 	sudo cp $(OUTPUT_DIR)/vexpress-v2p-ca9.dtb  mnt_sdcard
+	sudo cp $(UBOOT_SCRIPT)						mnt_sdcard
 	sudo mkdir -p mnt_sdcard/extlinux
 	sudo cp extlinux.conf                       mnt_sdcard/extlinux/
 	sudo cp testFile                            mnt_sdcard
@@ -145,6 +146,7 @@ sdcard_ext2: ## Create p1:FAT/p2:ext4 formatted SD card image with two partition
 	mkdir -p mnt_sdcard1
 	sudo cp $(OUTPUT_DIR)/zImage               mnt_sdcard1
 	sudo cp $(OUTPUT_DIR)/vexpress-v2p-ca9.dtb mnt_sdcard1
+	sudo cp $(UBOOT_SCRIPT)					   mnt_sdcard1
 	sudo mkdir -p mnt_sdcard1/extlinux
 	sudo cp extlinux.conf                      mnt_sdcard1/extlinux/
 	sudo cp testFile                           mnt_sdcard1
