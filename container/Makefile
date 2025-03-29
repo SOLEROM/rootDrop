@@ -150,7 +150,6 @@ sdcard_ext2: ## Create ext4-formatted SD card image with two partitions
 	sudo mkdir -p mnt_sdcard1/extlinux
 	sudo cp extlinux.conf                      mnt_sdcard1/extlinux/
 	sudo cp testFile                           mnt_sdcard1
-	tree mnt_sdcard1
 	sudo umount mnt_sdcard1
 	rmdir mnt_sdcard1
 
@@ -189,6 +188,18 @@ boot_no_uboot: ## Boot directly without U-Boot
 .PHONY: boot2
 boot2: boot_no_uboot ## Alias for boot_no_uboot
 
+#  TODO: had some issues with  virtio-blk-device
+# .PHONY: run
+# run: 
+# 	qemu-system-arm \
+# 		-M vexpress-a9 \
+# 		-m 256M \
+# 		-nographic \
+# 		-kernel $(OUTPUT_DIR)/u-boot \
+# 		-sd $(SD_IMAGE) \
+# 		-drive file=$(OUTPUT_DIR)/rootfs.ext2,if=none,format=raw,id=hd0 -device virtio-blk-device,drive=hd0 \
+# 		-audiodev none,id=noaudio
+
 .PHONY: run
 run: 
 	qemu-system-arm \
@@ -197,8 +208,8 @@ run:
 		-nographic \
 		-kernel $(OUTPUT_DIR)/u-boot \
 		-sd $(SD_IMAGE) \
-		-drive file=$(OUTPUT_DIR)/rootfs.ext2,if=none,format=raw,id=hd0 -device virtio-blk-device,drive=hd0 \
 		-audiodev none,id=noaudio
+
 
 .PHONY: all
 all: help
