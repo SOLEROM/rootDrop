@@ -10,6 +10,5 @@ sudo kexec -e
 ### ubu24
 
 ```
-sudo kexec -l /boot/vmlinuz  --initrd=/boot/initrd.img  --command-line="$(cat /proc/cmdline) systemd.unit=rescue.target"
-sudo kexec -d -p
+sudo kexec -l /boot/vmlinuz  --initrd=/boot/initrd.img  --command-line="$(cat /proc/cmdline) systemd.unit=rescue.target  && sudo kexec -e
 ```
